@@ -70,7 +70,6 @@ public class Login extends AppCompatActivity {
                 }
             }
         });
-
     }
 
     public void login() throws IOException{
@@ -122,7 +121,7 @@ public class Login extends AppCompatActivity {
                     @Override
                     public void run() {
                         dialog.dismiss();
-                        if(token != null) {
+                        if( token != null) {
                             Intent intent = new Intent(Login.this, Dashboard.class);
                             sharedPreferences = getSharedPreferences("GET_ACCESS_TOKEN", MODE_PRIVATE);
 

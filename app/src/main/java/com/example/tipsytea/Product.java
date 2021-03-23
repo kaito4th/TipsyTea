@@ -7,9 +7,13 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import android.app.ActionBar;
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -29,6 +33,9 @@ public class Product extends AppCompatActivity {
     private ListView listView;
     ArrayList<HashMap<String,String>> arrayList;
     SharedPreferences sharedPreferences;
+    TextView back;
+
+    private ProgressDialog dialog;
 
     String URL = "https://tipsytea3-dev-ed.my.salesforce.com/services/apexrest/TipsyTeaAPIConnection/v1/?tab=product";
 
@@ -39,10 +46,24 @@ public class Product extends AppCompatActivity {
 
         listView = findViewById(R.id.product_list);
         arrayList = new ArrayList<>();
+        back = findViewById(R.id.product_back);
 
         sharedPreferences = getSharedPreferences("PARSED_ACCESS_TOKEN", MODE_PRIVATE);
         String ACCESS_TOKEN = sharedPreferences.getString("PARSED_TOKEN", null);
         Log.e("token",ACCESS_TOKEN);
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(),Dashboard.class);
+                startActivity(intent);
+            }
+        });
+
+        dialog = new ProgressDialog(this);
+        dialog.setCancelable(false);
+        dialog.setMessage("Loading....");
+        dialog.show();
 
         OkHttpClient client = new OkHttpClient();
 
@@ -66,6 +87,7 @@ public class Product extends AppCompatActivity {
                     Product.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            dialog.dismiss();
                             try {
                                 final JSONArray jsonArray = new JSONArray(myResponse);
                                 for(int i = 0; i < jsonArray.length();i++ ){
@@ -81,7 +103,7 @@ public class Product extends AppCompatActivity {
 
                                     arrayList.add(data);
                                     final ListAdapter listAdapter = new SimpleAdapter(Product.this,arrayList,R.layout.single_product_data,
-                                            new String[]{"Product_Name__c", "Id", "Product_Total_Price__c"}, new int[]{R.id.product_name, R.id.product_id, R.id.product_price});
+                                            new String[]{ "Product_Name__c", "Id", "Product_Total_Price__c"}, new int[]{R.id.product_name, R.id.product_id, R.id.product_price});
                                     listView.setAdapter(listAdapter);
                                 }
                             } catch (JSONException e) {

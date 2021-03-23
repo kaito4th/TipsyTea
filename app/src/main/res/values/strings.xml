@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Tipsy Tea</string>
+    <string name="qty">qty</string>
+    <string name="item"><hr></hr>Item</string>
 </resources>
